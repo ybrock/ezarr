@@ -1,0 +1,105 @@
+---
+services:
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=13001
+      - PGID=13000
+      - UMASK=002
+      - TZ=Europe/Zurich
+    volumes:
+      - /data/config/sonarr-config:/config
+      - /data/data:/data
+    ports:
+      - "8989:8989"
+    restart: unless-stopped
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=13002
+      - PGID=13000
+      - UMASK=002
+      - TZ=Europe/Zurich
+    volumes:
+      - /data/config/radarr-config:/config
+      - /data/data:/data
+    ports:
+      - "7878:7878"
+    restart: unless-stopped
+
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    environment:
+      - PUID=13004
+      - PGID=13000
+      - UMASK=002
+      - TZ=Europe/Zurich
+    volumes:
+      - /data/config/readarr-config:/config
+      - /data/data:/data
+    ports:
+      - "8787:8787"
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:develop
+    container_name: prowlarr
+    environment:
+      - PUID=13006
+      - PGID=13000
+      - UMASK=002
+      - TZ=Europe/Zurich
+    volumes:
+      - /data/config/prowlarr-config:/config
+    ports:
+      - "9696:9696"
+    restart: unless-stopped
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_HTML=${LOG_HTML:-false}
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+      - TZ=Europe/Zurich
+    ports:
+      - "8191:8191"
+    restart: unless-stopped
+
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=13010
+      - PGID=13000
+      - VERSION=docker
+      - PLEX_CLAIM=${PLEX_CLAIM}
+    volumes:
+      - /data/config/plex-config:/config
+      - /data/data/media:/media
+    restart: unless-stopped
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=13007
+      - PGID=13000
+      - UMASK=002
+      - TZ=Europe/Zurich
+      - WEBUI_PORT=8080
+    volumes:
+      - /data/config/qbittorrent-config:/config
+      - /data/data/torrents:/data/torrents
+    ports:
+      - "8080:8080"
+      - "6881:6881"
+      - "6881:6881/udp"
+    restart: unless-stopped
+
